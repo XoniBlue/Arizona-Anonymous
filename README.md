@@ -85,4 +85,4 @@ If you'd like to contribute to the development of this bot, feel free to fork th
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the CC0-1.0 license - see the [LICENSE](LICENSE) file for details.
