@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
 
-
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -25,10 +24,16 @@ logger = logging.getLogger(__name__)
 
 # Load Configuration
 def load_config():
+        # Open and load the JSON config file
     with open("json/config.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
-config = load_config()
+        config = json.load(f)
+# Check if there's an environment variable for the discord token
+        discord_token = os.getenv('discord_token')
+    if discord_token:
+        config['discord_token'] = discord_token
+    else:
+        raise ValueError("discord_token is missing")
+    return config
 
 # Load the user's time zone
 def load_user_timezones():
@@ -568,4 +573,8 @@ async def purge(ctx, number: int):
 
 
 # Run the bot
-bot.run(config["bot_token"])
+
+
+
+config = load_config()
+bot.run(config["discord_token"])
