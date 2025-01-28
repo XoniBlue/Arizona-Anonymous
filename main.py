@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Load Configuration
 def load_config():
-    with open("config.json", "r", encoding="utf-8") as f:
+    with open("json/config.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 config = load_config()
@@ -32,19 +32,19 @@ config = load_config()
 # Load the user's time zone
 def load_user_timezones():
     try:
-        with open("user_timezones.json", "r", encoding="utf-8") as f:
+        with open("json/user_timezones.json", "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
 # Save the user's time zone
 def save_user_timezones(user_timezones):
-    with open("user_timezones.json", "w", encoding="utf-8") as f:
+    with open("json/user_timezones.json", "w", encoding="utf-8") as f:
         json.dump(user_timezones, f, indent=4)
 
 # Load daily thoughts from the local JSON file
 def fetch_daily_thoughts():
     try:
-        with open("daily_thoughts.json", "r", encoding="utf-8") as f:
+        with open("json/daily_thoughts.json", "r", encoding="utf-8") as f:
 # Attempt to load the JSON data
             content = f.read()
             try:
@@ -158,14 +158,14 @@ async def on_message(message):
 
 # Load static content (steps, traditions, prayers, etc.)
 def load_static_content():
-    with open("static.json", "r", encoding="utf-8") as f:
+    with open("json/static.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 # Load sponsor data
 def load_sponsors():
     try:
-        with open("sponsors.json", "r", encoding="utf-8") as f:
+        with open("json/sponsors.json", "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
@@ -234,7 +234,7 @@ def scrape_coda_weekly_reading():
 # Load daily reflections from the local JSON file
 def fetch_daily_reflections():
     try:
-        with open("reflections.json", "r", encoding="utf-8") as f:
+        with open("json/reflections.json", "r", encoding="utf-8") as f:
             reflections = json.load(f)
             daily_reflections = {}
 
@@ -422,7 +422,7 @@ async def preamble(ctx):
 @bot.command(help="Displays the 'How It Works' section, explaining the process of the AA program.")
 async def how(ctx):
     # Load the static.json file
-    with open("static.json", "r") as file:
+    with open("json/static.json", "r") as file:
         data = json.load(file)
 
     # Retrieve the content for each part
