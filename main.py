@@ -6,9 +6,7 @@ import random
 import pytz
 import logging
 import requests
-import csv
 from io import StringIO
-import threading
 from lxml import html
 from datetime import datetime
 import os
