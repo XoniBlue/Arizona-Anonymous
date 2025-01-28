@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bot Control Panel</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .btn { padding: 10px 20px; cursor: pointer; background-color: #4CAF50; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <h1>Bot Control Panel</h1>
+  
+  <!-- Example: Toggle bot activity -->
+  <button class="btn" onclick="toggleBotActivity()">Toggle Bot Activity</button>
+
+  <script>
+    async function toggleBotActivity() {
+      const response = await fetch('/api/toggle_activity', { method: 'POST' });
+      if (response.ok) {
+        alert('Bot activity toggled!');
+      }
+    }
+  </script>
+</body>
+</html>

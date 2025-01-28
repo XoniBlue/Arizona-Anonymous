@@ -1,0 +1,17 @@
+# Dockerfile for the bot (bot/Dockerfile.bot)
+FROM python:3.9-slim
+
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project, including the .env file
+COPY . .
+
+# Optionally: Load environment variables from .env using python-dotenv (if you want to load it explicitly)
+RUN pip install python-dotenv
+
+# Run your bot
+CMD ["python3", "main.py"]
