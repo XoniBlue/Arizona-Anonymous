@@ -1,27 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bot Control Panel</title>
-  <style>
-    body { font-family: Arial, sans-serif; }
-    .btn { padding: 10px 20px; cursor: pointer; background-color: #4CAF50; color: white; border: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Control</title>
 </head>
 <body>
-  <h1>Bot Control Panel</h1>
-  
-  <!-- Example: Toggle bot activity -->
-  <button class="btn" onclick="toggleBotActivity()">Toggle Bot Activity</button>
+    <h1>Control the Bot</h1>
+    
+    <!-- Form to set the timezone -->
+    <form action="/set_timezone" method="POST">
+        <label for="timezone">Enter Timezone (e.g., America/Phoenix): </label>
+        <input type="text" id="timezone" name="timezone" required>
+        <button type="submit">Save Timezone</button>
+    </form>
 
-  <script>
-    async function toggleBotActivity() {
-      const response = await fetch('/api/toggle_activity', { method: 'POST' });
-      if (response.ok) {
-        alert('Bot activity toggled!');
-      }
-    }
-  </script>
+    <h2>Current Timezone</h2>
+    <p id="current-timezone">Timezone not set yet.</p>
+
+    <!-- Buttons for start/stop bot -->
+    <button id="start-button" onclick="startBot()">Start Bot</button>
+    <button id="stop-button" onclick="stopBot()">Stop Bot</button>
+
+    <script>
+        // Fetch and display the current timezone
+        fetch('/get_timezone')
+            .then(response => response.json())
+            .then(data => {
+                if (data.timezone) {
+                    document.getElementById("current-timezone").textContent = data.timezone;
+                }
+            });
+
+        // Start bot by sending a POST request to the backend
+        function startBot() {
+            fetch('/bot/start', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => alert(data.status));
+        }
+
+        // Stop bot by sending a POST request to the backend
+        function stopBot() {
+            fetch('/bot/stop', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => alert(data.status));
+        }
+    </script>
 </body>
 </html>

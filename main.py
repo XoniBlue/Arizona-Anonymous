@@ -12,8 +12,9 @@ import threading
 from lxml import html
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
-BOT_TOKEN = os.getenv('BOT_TOKEN')
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
 
 
 # Set up logging
