@@ -20,12 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 
-# Load Configuration
+#Load Configuration
 def load_config():
         # Open and load the JSON config file
     with open("json/config.json", "r", encoding="utf-8") as f:
         config = json.load(f)
-# Check if there's an environment variable for the discord token
+        
+        
+#Check if there's an environment variable for the discord token
         discord_token = os.getenv('discord_token')
     if discord_token:
         config['discord_token'] = discord_token
@@ -33,31 +35,39 @@ def load_config():
         raise ValueError("discord_token is missing")
     return config
 
+
 # Load the user's time zone
 def load_user_timezones():
     try:
         with open("json/user_timezones.json", "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+            print("User timezones loaded successfully.")
+            return data
     except FileNotFoundError:
+        print("File not found. Returning empty dictionary.")
         return {}
+    
 # Save the user's time zone
 def save_user_timezones(user_timezones):
     with open("json/user_timezones.json", "w", encoding="utf-8") as f:
         json.dump(user_timezones, f, indent=4)
 
+
+
 # Load daily thoughts from the local JSON file
 def fetch_daily_thoughts():
     try:
         with open("json/daily_thoughts.json", "r", encoding="utf-8") as f:
-# Attempt to load the JSON data
+            # Attempt to load the JSON data
             content = f.read()
             try:
-# If the file contains multiple JSON objects, split them
-# You could adjust this approach based on the format you're working with
+            # If the file contains multiple JSON objects, split them
+            # You could adjust this approach based on the format you're working with
                 daily_thoughts = json.loads(f"[{content.replace('}{', '},{')}]")
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON: {e}")
                 return None
+
 
 # Prepare the dictionary to store thoughts
             daily_thoughts_data = {}
@@ -65,14 +75,14 @@ def fetch_daily_thoughts():
             for thought in daily_thoughts:
                 date_str = thought.get("date")
                 if date_str and "quote" in thought:
-# Try to parse the date in "MMMM dd" format
+                    # Try to parse the date in "MMMM dd" format
                     try:
                         parsed_date = datetime.strptime(date_str, "%B %d").strftime("%B %d")
                     except ValueError:
                         print(f"Invalid date format: {date_str}")
                         continue
 
-# Extract the thought details
+                    # Extract the thought details
                     daily_thoughts_data[parsed_date] = {
                         "quote": thought["quote"],
                         "reflection": thought.get("reflection", ""),
@@ -87,16 +97,19 @@ def fetch_daily_thoughts():
         print(f"An error occurred: {e}")
         return None
 
+
 # Set up bot
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True  # Enable the members intent
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+
 # Dismiss button functionality
 class DismissButton(View):
     def __init__(self):
         super().__init__(timeout=None)
+
 
     @discord.ui.button(label="Dismiss", style=discord.ButtonStyle.danger)
     async def dismiss(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -104,12 +117,14 @@ class DismissButton(View):
         await interaction.message.delete()  # This will delete the message when the button is clicked
         await interaction.response.send_message("The message has been dismissed.", ephemeral=True)
 
+
 # Command to send a message with the dismiss button
 @bot.command()
 async def send(ctx):
     view = DismissButton()
     await ctx.send("Click to dismiss!", view=view)
     logger.info(f"Sent dismiss message to {ctx.channel.name}")
+
 
 # Get a random meditation quote
 def get_random_meditation_quote():
@@ -119,6 +134,7 @@ def get_random_meditation_quote():
         return random.choice(meditation_quotes)
     return "No meditation quotes found."
 
+
 # List of channels to send quotes to
 channels_to_send = [
  #   "1328598213501911065", "1328598213501911064", "1328598213501911068", 
@@ -126,6 +142,7 @@ channels_to_send = [
  #   "1329166132678103213", "1329165078217621505", "1329165234010587226", 
  #   "1328598213501911069"
 ]  # Add your channel IDs here
+
 
 # Task to send a random quote periodically
 @tasks.loop(hours=3)  # Adjust time interval as needed (e.g., hours=1, minutes=30, etc.)
@@ -143,6 +160,8 @@ async def send_random_meditation_quote():
             await channel.send(f"_**{quote}**_")
         else:
             print(f"Channel with ID {channel_id} not found or no quotes available.")
+#Bot Events         
+            
 @bot.event
 async def on_ready():
     activity = discord.Game(name="Recovery Support !help")  # Game type with no prefix like 'Playing'
@@ -151,6 +170,7 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.online, activity=activity)
     send_random_meditation_quote.start()  # Start the periodic task with the correct name
     logger.info(f"Bot is ready and logged in as {bot.user}")
+
 
 @bot.event
 async def on_message(message):
@@ -192,7 +212,7 @@ def scrape_just_for_today():
         basic_text_page_number = get_text_safe("//tr[5]")
         basic_text_passage = get_text_safe("//tr[6]")
         passage = get_text_safe("//tr[7]")
-
+        #message formatting
         message = (
             f"`Just for Today N.A.`\n"
             f"-# {date}\n"
@@ -206,6 +226,7 @@ def scrape_just_for_today():
         return message
     else:
         return "Failed to fetch Just for Today reading."
+
 
 # Function to scrape the CoDA Weekly Reading
 def scrape_coda_weekly_reading():
@@ -232,7 +253,6 @@ def scrape_coda_weekly_reading():
         return message
     else:
         return "Failed to fetch CoDA Weekly Reading."
-
 
 
 # Load daily reflections from the local JSON file
