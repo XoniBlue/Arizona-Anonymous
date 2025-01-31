@@ -1,6 +1,6 @@
-import discord
-from discord.ext import commands, tasks
-from discord.ui import Button, View
+import nextcord
+from nextcord.ext import commands, tasks
+#from nextcord.ui import Button, View
 import json
 import random
 import pytz
@@ -27,7 +27,7 @@ def load_config():
         config = json.load(f)
         
         
-#Check if there's an environment variable for the discord token
+#Check if there's an environment variable for the nextcord token
         discord_token = os.getenv('discord_token')
     if discord_token:
         config['discord_token'] = discord_token
@@ -99,31 +99,31 @@ def fetch_daily_thoughts():
 
 
 # Set up bot
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.message_content = True
 intents.members = True  # Enable the members intent
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 
 # Dismiss button functionality
-class DismissButton(View):
-    def __init__(self):
-        super().__init__(timeout=None)
+#class DismissButton(View):
+    #def __init__(self):
+     #   super().__init__(timeout=None)
 
 
-    @discord.ui.button(label="Dismiss", style=discord.ButtonStyle.danger)
-    async def dismiss(self, button: discord.ui.Button, interaction: discord.Interaction):
+   # @discord.ui.button(label="Dismiss", style=discord.ButtonStyle.danger)
+    #async def dismiss(self, button: discord.ui.Button, interaction: discord.Interaction):
         # Correct way to delete the message using the interaction object
-        await interaction.message.delete()  # This will delete the message when the button is clicked
-        await interaction.response.send_message("The message has been dismissed.", ephemeral=True)
+    #    await interaction.message.delete()  # This will delete the message when the button is clicked
+    #    await interaction.response.send_message("The message has been dismissed.", ephemeral=True)
 
 
 # Command to send a message with the dismiss button
-@bot.command()
-async def send(ctx):
-    view = DismissButton()
-    await ctx.send("Click to dismiss!", view=view)
-    logger.info(f"Sent dismiss message to {ctx.channel.name}")
+#@bot.command()
+#async def send(ctx):
+ #   view = DismissButton()
+  #  await ctx.send("Click to dismiss!", view=view)
+   # logger.info(f"Sent dismiss message to {ctx.channel.name}")
 
 
 # Get a random meditation quote
@@ -164,10 +164,10 @@ async def send_random_meditation_quote():
             
 @bot.event
 async def on_ready():
-    activity = discord.Game(name="Recovery Support !help")  # Game type with no prefix like 'Playing'
+    activity = nextcord.Game(name="Recovery Support !help")  # Game type with no prefix like 'Playing'
     # Force the bot to cache all members
     await bot.guilds[0].chunk()  # Assumes the bot is in only one server
-    await bot.change_presence(status=discord.Status.online, activity=activity)
+    await bot.change_presence(status=nextcord.Status.online, activity=activity)
     send_random_meditation_quote.start()  # Start the periodic task with the correct name
     logger.info(f"Bot is ready and logged in as {bot.user}")
 
@@ -492,7 +492,7 @@ async def sponsor_add(ctx):
     member = ctx.author
 
     # Get the 'Sponsor' role
-    sponsor_role = discord.utils.get(ctx.guild.roles, name="Sponsor")
+    sponsor_role = nextcord.utils.get(ctx.guild.roles, name="Sponsor")
 
     if not sponsor_role:
         await ctx.send("The 'Sponsor' role does not exist.")
@@ -507,7 +507,7 @@ async def sponsor_remove(ctx):
     member = ctx.author
 
     # Get the 'Sponsor' role
-    sponsor_role = discord.utils.get(ctx.guild.roles, name="Sponsor")
+    sponsor_role = nextcord.utils.get(ctx.guild.roles, name="Sponsor")
 
     if not sponsor_role:
         await ctx.send("The 'Sponsor' role does not exist.")
@@ -523,7 +523,7 @@ async def sponsor_remove(ctx):
 @bot.command(help="Lists all members who have the 'Sponsor' role.")
 async def sponsorlist(ctx):
     # Fetch the 'Sponsor' role from the server
-    sponsor_role = discord.utils.get(ctx.guild.roles, name="Sponsor")
+    sponsor_role = nextcord.utils.get(ctx.guild.roles, name="Sponsor")
 
     if not sponsor_role:
         await ctx.send("The 'Sponsor' role does not exist.")

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cog Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white flex justify-center items-center h-screen">
+
+    <!-- Main container -->
+    <div class="container mx-auto flex flex-col items-center space-y-8">
+
+        <!-- Cog Management Section -->
+        <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
+            <h2 class="text-2xl font-bold mb-4 text-center text-yellow-400">🛠️ Manage Cogs</h2>
+            <p class="text-center text-gray-400 mb-4">Enable or Disable Cogs</p>
+
+            <div class="space-y-4">
+                {% for cog in cogs %}
+                <div class="flex justify-between items-center">
+                    <span class="text-lg text-white">{{ cog }}</span>
+                    <form action="/toggle_cog" method="POST" class="flex items-center space-x-4">
+                        <input type="hidden" name="cog_name" value="{{ cog }}">
+                        <button type="submit" name="action" value="disable"
+                            class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            Disable
+                        </button>
+                        <button type="submit" name="action" value="enable"
+                            class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
+                            Enable
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if message %}
+            <p class="mt-4 text-center text-green-400">{{ message }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Timezone Settings Section -->
+        <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full sm:w-96">
+            <h2 class="text-2xl font-bold mb-4 text-center text-blue-400">🌍 Set Your Timezone</h2>
+            <form action="/set_timezone" method="post" class="space-y-4">
+                <div>
+                    <label for="user" class="block text-sm font-medium">Username</label>
+                    <input type="text" id="user" name="user" required
+                        class="mt-1 block w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label for="timezone" class="block text-sm font-medium">Timezone</label>
+                    <input type="text" id="timezone" name="timezone" required
+                        class="mt-1 block w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition">
+                    Submit
+                </button>
+            </form>
+
+            {% if message %}
+            <p class="mt-4 text-center text-green-400">{{ message }}</p>
+            {% endif %}
+            
+            <!-- Show Timezone List Button -->
+            <button id="show-timezones-btn" onclick="showTimezones()"
+                class="w-full mt-4 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg font-semibold transition">
+                Show Time Zones
+            </button>
+
+            <!-- List of Users and Timezones -->
+            <div id="timezone-list" class="mt-6 hidden space-y-2">
+                <h3 class="text-lg text-white text-center">Users and Timezones:</h3>
+                <ul class="text-gray-400 text-center">
+                    {% for user, timezone in users_and_timezones.items() %}
+                    <li>{{ user }}: {{ timezone }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 mt-8">
+        <h3 class="text-lg font-bold text-center">🌍 User Timezones</h3>
+        <ul class="list-disc list-inside mt-4">
+            {% for user, timezone in users_and_timezones.items() %}
+            <li><strong>{{ user }}</strong>: {{ timezone }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- JavaScript to toggle the timezones list -->
+    <script>
+        function showTimezones() {
+            var list = document.getElementById('timezone-list');
+            list.classList.toggle('hidden');
+        }
+    </script>
+
+</body>
+
+</html>
